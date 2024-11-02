@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+http-common = { path = "../../packages/http-common" }
 tokio = { workspace = true, features = ["full"] }
 clap = { workspace = true, features = ["derive", "env"] }
 log = { workspace = true }
@@ -14,6 +15,7 @@ env_logger = { workspace = true }
 anyhow = { workspace = true }
 poem = { workspace = true }
 poem-openapi = { workspace = true }
+rust-embed = { workspace = true }
 
 [[bin]]
 name = "server"

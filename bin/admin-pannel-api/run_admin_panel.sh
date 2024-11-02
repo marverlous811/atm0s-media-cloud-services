@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cargo run --bin server -- --port 8081
+cargo run --release -- --port 8081

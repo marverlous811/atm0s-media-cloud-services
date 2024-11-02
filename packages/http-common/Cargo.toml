@@ -1,0 +1,15 @@
+[package]
+name = "http-common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+poem = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+rust-embed = { workspace = true }
+mime_guess = { workspace = true }
+hex = { workspace = true }
+log = { workspace = true }
+reqwest = { workspace = true }
