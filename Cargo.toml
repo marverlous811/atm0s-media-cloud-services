@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "bin/admin-pannel-api", 
+    "bin/admin-panel", 
     "packages/http-common"
 ]
 
@@ -21,3 +21,7 @@ rust-embed = "8.0"
 reqwest = "0.12"
 mime_guess = { version = "2.0" }
 hex = "0.4"
+welds = "0.4"
+sqlx = "0.8"
+uuid = "1.10"
+chrono = "0.4"
