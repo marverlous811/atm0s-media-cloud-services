@@ -1,3 +1,4 @@
 #!/bin/bash
 
-cargo run --release -- --port 8081
+export $(cat .env | xargs)
+cargo run --release

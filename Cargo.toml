@@ -1,8 +1,9 @@
 [workspace]
 resolver = "2"
 members = [
-    "bin/admin-panel", 
-    "packages/http-common"
+    "bin/admin-panel",
+    "packages/http-common",
+    "packages/utils",
 ]
 
 [workspace.dependencies]
@@ -25,3 +26,4 @@ welds = "0.4"
 sqlx = "0.8"
 uuid = "1.10"
 chrono = "0.4"
+jsonwebtoken = "9.3.0"
