@@ -7,6 +7,7 @@ use std::{
     sync::Arc,
 };
 
+use http_common::response::to_response_error;
 use poem::{
     listener::TcpListener,
     middleware::{AddData, Tracing},
@@ -34,7 +35,8 @@ pub async fn run_http(port: u16, db: Arc<dyn welds::Client>, cfg: HttpCfg) -> an
         .nest("/api", api::build_route(ctx.clone()))
         .nest("/", build_frontend_route())
         .with(AddData::new(ctx))
-        .with(Tracing);
+        .with(Tracing)
+        .catch_all_error(|e| async move { to_response_error(e.into()) });
 
     let _ = Server::new(TcpListener::bind(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), port)))
         .name("admin-panel")

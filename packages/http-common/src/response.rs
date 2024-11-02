@@ -1,4 +1,6 @@
-use poem::{http::StatusCode, IntoResponse, Response};
+use std::any::Any;
+
+use poem::{http::StatusCode, Error, IntoResponse, Response};
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -20,15 +22,7 @@ pub fn to_response<E: Serialize>(response: anyhow::Result<E>) -> impl IntoRespon
         Ok(res) => Response::builder()
             .header("content-type", "application/json; charset=utf-8")
             .body(serde_json::to_vec(&res).expect("should convert to json")),
-        Err(err) => Response::builder()
-            .header("content-type", "application/json; charset=utf-8")
-            .status(StatusCode::BAD_REQUEST)
-            .body(
-                serde_json::to_vec(&ErrorResponse {
-                    message: err.to_string(),
-                })
-                .expect("should convert to json"),
-            ),
+        Err(err) => to_response_error(err),
     }
 }
 
@@ -39,14 +33,44 @@ pub fn to_response_list<E: Serialize>(response: anyhow::Result<(Vec<E>, usize)>)
             .header("content-type", "application/json; charset=utf-8")
             .header("X-Total-Count", total)
             .body(serde_json::to_vec(&ListResponse { items: res, total }).expect("should convert to json")),
-        Err(err) => Response::builder()
+        Err(err) => to_response_error(err),
+    }
+}
+
+pub fn to_response_error(err: anyhow::Error) -> Response {
+    let poem_err = err.downcast_ref::<poem::Error>();
+    if let Some(poem_err) = poem_err {
+        return Response::builder()
+            .header("content-type", "application/json; charset=utf-8")
+            .status(poem_err.status())
+            .body(
+                serde_json::to_vec(&ErrorResponse {
+                    message: poem_err.to_string(),
+                })
+                .expect("should convert to json"),
+            );
+    }
+
+    let serde_err = err.downcast_ref::<serde_json::Error>();
+    if let Some(serde_err) = serde_err {
+        return Response::builder()
             .header("content-type", "application/json; charset=utf-8")
             .status(StatusCode::BAD_REQUEST)
             .body(
                 serde_json::to_vec(&ErrorResponse {
-                    message: err.to_string(),
+                    message: serde_err.to_string(),
                 })
                 .expect("should convert to json"),
-            ),
+            );
     }
+
+    Response::builder()
+        .header("content-type", "application/json; charset=utf-8")
+        .status(StatusCode::INTERNAL_SERVER_ERROR)
+        .body(
+            serde_json::to_vec(&ErrorResponse {
+                message: err.to_string(),
+            })
+            .expect("should convert to json"),
+        )
 }
