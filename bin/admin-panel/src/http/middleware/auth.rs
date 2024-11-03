@@ -75,7 +75,7 @@ impl<E: Endpoint> Endpoint for AuthMiddlewareImpl<E> {
                     return Err(Error::from_string("User not found", StatusCode::UNAUTHORIZED));
                 }
 
-                let user = user.unwrap();
+                let user = user.unwrap().unwrap();
                 let headers = req.headers_mut();
                 headers.insert(USER_ID_HEADER, HeaderValue::from_str(&user.id).unwrap());
 

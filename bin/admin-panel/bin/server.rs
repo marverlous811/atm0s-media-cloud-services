@@ -18,6 +18,18 @@ struct Args {
 
     #[arg(env, long, default_value = "60")]
     jwt_max_age_minutes: u64,
+
+    #[arg(env, long)]
+    google_id: String,
+
+    #[arg(env, long)]
+    google_secret: String,
+
+    #[arg(env, long)]
+    google_redirect_uri: String,
+
+    #[arg(env, long, default_value_t = false)]
+    is_secure: bool,
 }
 
 #[tokio::main]
@@ -53,6 +65,10 @@ async fn main() -> anyhow::Result<()> {
         http::HttpCfg {
             jwt_secret: args.jwt_secret,
             jwt_max_age_minutes: args.jwt_max_age_minutes,
+            google_id: args.google_id,
+            google_secret: args.google_secret,
+            google_redirect_uri: args.google_redirect_uri,
+            is_secure: args.is_secure,
         },
     )
     .await?;

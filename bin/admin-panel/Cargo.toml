@@ -13,7 +13,7 @@ serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 env_logger = { workspace = true }
 anyhow = { workspace = true }
-poem = { workspace = true }
+poem = { workspace = true, features = ["session"] }
 poem-openapi = { workspace = true }
 rust-embed = { workspace = true }
 welds = { workspace = true, features = ["migrations", "check", "sqlite", "postgres", "mysql"] }
@@ -21,7 +21,9 @@ sqlx = { workspace = true, features = ["runtime-tokio", "chrono"] }
 uuid = { workspace = true, features = ["v4"] }
 chrono = { workspace = true, features = ["serde"] }
 jsonwebtoken = { workspace = true }
+reqwest = { workspace = true, features = ["json"] }
 bcrypt = "0.15"
+oauth2 = { version = "4.4.2" }
 
 [[bin]]
 name = "server"

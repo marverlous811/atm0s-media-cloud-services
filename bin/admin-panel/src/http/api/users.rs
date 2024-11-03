@@ -1,4 +1,5 @@
-use poem::{get, handler, web::Data, IntoResponse, Request, Route};
+use poem::{get, handler, web::Data, Error, IntoResponse, Request, Route};
+use reqwest::StatusCode;
 
 use crate::{
     database::{
@@ -21,8 +22,10 @@ pub async fn get_me(req: &Request, data: Data<&HttpContext>) -> impl IntoRespons
             },
         )
         .await?;
-
-        Ok(user)
+        match user {
+            Some(user) => Ok(user),
+            None => anyhow::bail!(Error::from_string("User not found", StatusCode::NOT_FOUND)),
+        }
     }
 
     http_common::response::to_response(process(req, data).await)

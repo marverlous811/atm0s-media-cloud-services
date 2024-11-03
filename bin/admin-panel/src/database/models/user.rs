@@ -1,11 +1,14 @@
 use serde::{Deserialize, Serialize};
 use welds::{errors::Result, WeldsModel};
 
+use super::account::Account;
+
 pub const USER_TABLE: &str = "d_users";
 
 #[derive(Debug, Clone, WeldsModel, Serialize, Deserialize)]
 #[welds(table = "d_users")]
 #[welds(db(Sqlite, Postgres))]
+#[welds(HasMany(accounts, Account, "user_id"))]
 #[welds(BeforeCreate(before_create))]
 #[welds(BeforeUpdate(before_update))]
 pub struct User {

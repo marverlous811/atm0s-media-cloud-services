@@ -29,12 +29,12 @@ pub async fn create_user(client: Arc<dyn welds::Client>, dto: CreateUserDto) -> 
     Ok(user.into_inner())
 }
 
-pub async fn get_user(client: Arc<dyn welds::Client>, filter: UserFilterDto) -> anyhow::Result<User> {
+pub async fn get_user(client: Arc<dyn welds::Client>, filter: UserFilterDto) -> anyhow::Result<Option<User>> {
     let query = build_filter(filter).limit(1);
     let mut res = query.run(client.as_ref()).await?;
     match res.pop() {
-        Some(user) => Ok(user.into_inner()),
-        None => anyhow::bail!("User not found"),
+        Some(user) => Ok(Some(user.into_inner())),
+        None => Ok(None),
     }
 }
 

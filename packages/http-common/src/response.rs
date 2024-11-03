@@ -1,6 +1,4 @@
-use std::any::Any;
-
-use poem::{http::StatusCode, Error, IntoResponse, Response};
+use poem::{http::StatusCode, IntoResponse, Response};
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -38,6 +36,7 @@ pub fn to_response_list<E: Serialize>(response: anyhow::Result<(Vec<E>, usize)>)
 }
 
 pub fn to_response_error(err: anyhow::Error) -> Response {
+    log::error!("Error: {:?}", err);
     let poem_err = err.downcast_ref::<poem::Error>();
     if let Some(poem_err) = poem_err {
         return Response::builder()
