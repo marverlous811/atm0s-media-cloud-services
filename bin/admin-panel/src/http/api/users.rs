@@ -1,4 +1,4 @@
-use poem::{get, handler, web::Data, Error, IntoResponse, Request, Route};
+use poem::{get, handler, web::Data, Error, IntoResponse, Route};
 use reqwest::StatusCode;
 
 use crate::{
@@ -6,18 +6,16 @@ use crate::{
         models::user::User,
         repositories::users::{get_user, UserFilterDto},
     },
-    http::{HttpContext, USER_ID_HEADER},
+    http::{middleware::auth::UserId, HttpContext},
 };
 
 #[handler]
-pub async fn get_me(req: &Request, data: Data<&HttpContext>) -> impl IntoResponse {
-    async fn process(req: &Request, data: Data<&HttpContext>) -> anyhow::Result<User> {
-        let user_id = req.headers().get(USER_ID_HEADER).unwrap();
-        let user_id = user_id.to_str().unwrap();
+pub async fn get_me(data: Data<&HttpContext>, user_id: UserId) -> impl IntoResponse {
+    async fn process(data: Data<&HttpContext>, user_id: UserId) -> anyhow::Result<User> {
         let user = get_user(
             data.db.clone(),
             UserFilterDto {
-                id: Some(user_id.to_string()),
+                id: Some(user_id.into()),
                 email: None,
             },
         )
@@ -28,7 +26,7 @@ pub async fn get_me(req: &Request, data: Data<&HttpContext>) -> impl IntoRespons
         }
     }
 
-    http_common::response::to_response(process(req, data).await)
+    http_common::response::to_response(process(data, user_id).await)
 }
 
 pub fn build_route() -> Route {

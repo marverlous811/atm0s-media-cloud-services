@@ -1,4 +1,5 @@
 mod auth;
+mod projects;
 mod users;
 
 pub use auth::UserTokenClaims;
@@ -28,6 +29,7 @@ pub fn build_route(ctx: HttpContext) -> Route {
         .nest("/auth", auth::build_route())
         .nest(
             "/users",
-            users::build_route().with(middleware::auth::AuthMiddleware::new(ctx)),
+            users::build_route().with(middleware::auth::AuthMiddleware::new(ctx.clone())),
         )
+        .nest("/projects", projects::build_route(ctx.clone()))
 }

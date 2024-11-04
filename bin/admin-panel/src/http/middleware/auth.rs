@@ -1,12 +1,33 @@
 use poem::{
     http::{HeaderValue, StatusCode},
-    Endpoint, Error, IntoResponse, Middleware, Request, Response, Result,
+    Endpoint, Error, FromRequest, IntoResponse, Middleware, Request, RequestBody, Response, Result,
 };
 
 use crate::{
     database::repositories::users::{get_user, UserFilterDto},
-    http::{api::UserTokenClaims, HttpContext, USER_ID_HEADER},
+    http::{api::UserTokenClaims, HttpContext},
 };
+
+const USER_ID_HEADER: &str = "X-User-Id";
+
+pub struct UserId(String);
+
+impl UserId {
+    pub fn into(self) -> String {
+        self.0
+    }
+}
+
+impl<'a> FromRequest<'a> for UserId {
+    async fn from_request(req: &'a Request, _body: &mut RequestBody) -> Result<Self> {
+        let user_id = req
+            .headers()
+            .get(USER_ID_HEADER)
+            .and_then(|value| value.to_str().ok())
+            .ok_or_else(|| Error::from_string("missing user_id", StatusCode::BAD_REQUEST))?;
+        Ok(UserId(user_id.to_string()))
+    }
+}
 
 pub struct AuthMiddleware {
     ctx: HttpContext,

@@ -12,12 +12,10 @@ use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, RedirectUrl, R
 use poem::{
     listener::TcpListener,
     middleware::{AddData, Tracing},
-    session::{CookieConfig, CookieSession, Session},
+    session::{CookieConfig, CookieSession},
     EndpointExt, Route, Server,
 };
 use view::build_frontend_route;
-
-const USER_ID_HEADER: &str = "X-User-Id";
 
 #[derive(Clone)]
 pub struct HttpCfg {
@@ -27,6 +25,7 @@ pub struct HttpCfg {
     pub google_id: String,
     pub google_secret: String,
     pub google_redirect_uri: String,
+    pub api_key: String,
 }
 
 #[derive(Clone)]

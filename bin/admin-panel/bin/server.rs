@@ -30,6 +30,9 @@ struct Args {
 
     #[arg(env, long, default_value_t = false)]
     is_secure: bool,
+
+    #[arg(env, long, default_value = "insecure")]
+    api_key: String,
 }
 
 #[tokio::main]
@@ -69,6 +72,7 @@ async fn main() -> anyhow::Result<()> {
             google_secret: args.google_secret,
             google_redirect_uri: args.google_redirect_uri,
             is_secure: args.is_secure,
+            api_key: args.api_key,
         },
     )
     .await?;
