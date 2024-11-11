@@ -20,6 +20,7 @@ pub async fn migration_up(client: &dyn welds::TransactStart) -> anyhow::Result<(
         &[
             m20241102_000000_create_user_table,
             m20241104_000000_create_project_table,
+            m20241111_000000_create_project_member,
         ],
     )
     .await
@@ -48,4 +49,13 @@ pub fn m20241104_000000_create_project_table(_: &TableState) -> Result<Migration
     let m = Manual::up(up).down(down);
 
     Ok(MigrationStep::new("create_project_table", m))
+}
+
+pub fn m20241111_000000_create_project_member(_: &TableState) -> Result<MigrationStep> {
+    let up = include_str!("./migrations/20241111_0000000/up.sql");
+    let down = include_str!("./migrations/20241111_0000000/down.sql");
+
+    let m = Manual::up(up).down(down);
+
+    Ok(MigrationStep::new("create_project_members", m))
 }

@@ -1,3 +1,6 @@
+mod members;
+
+use members::invite;
 use poem::{
     get, handler, post,
     web::{Data, Json},
@@ -89,13 +92,15 @@ pub async fn sync_projects(data: Data<&HttpContext>) -> impl IntoResponse {
 }
 
 pub fn build_project_route() -> Route {
-    Route::new().nest("", post(new_project))
+    Route::new()
+        .at("/:project_id/members/invite", post(invite))
+        .nest("/", post(new_project))
 }
 
 pub fn build_route(ctx: HttpContext) -> Route {
     Route::new()
         .nest(
-            "/",
+            "",
             build_project_route().with(middleware::auth::AuthMiddleware::new(ctx.clone())),
         )
         .nest(
