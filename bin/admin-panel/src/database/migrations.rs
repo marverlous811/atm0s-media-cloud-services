@@ -15,16 +15,7 @@ pub async fn check_tables(client: &dyn welds::Client) -> anyhow::Result<()> {
 }
 
 pub async fn migration_up(client: &dyn welds::TransactStart) -> anyhow::Result<()> {
-    match welds::migrations::up(
-        client,
-        &[
-            m20241102_000000_create_user_table,
-            m20241104_000000_create_project_table,
-            m20241111_000000_create_project_member,
-        ],
-    )
-    .await
-    {
+    match welds::migrations::up(client, &[m20241102_000000_init_admin_panel]).await {
         Ok(_) => Ok(()),
         Err(e) => {
             log::error!("Failed to apply migrations: {:?}", e);
@@ -33,29 +24,11 @@ pub async fn migration_up(client: &dyn welds::TransactStart) -> anyhow::Result<(
     }
 }
 
-pub fn m20241102_000000_create_user_table(_: &TableState) -> Result<MigrationStep> {
+pub fn m20241102_000000_init_admin_panel(_: &TableState) -> Result<MigrationStep> {
     let up = include_str!("./migrations/20241102_0000000/up.sql");
     let down = include_str!("./migrations/20241102_0000000/down.sql");
 
     let m = Manual::up(up).down(down);
 
-    Ok(MigrationStep::new("create_user_table", m))
-}
-
-pub fn m20241104_000000_create_project_table(_: &TableState) -> Result<MigrationStep> {
-    let up = include_str!("./migrations/20241104_0000000/up.sql");
-    let down = include_str!("./migrations/20241104_0000000/down.sql");
-
-    let m = Manual::up(up).down(down);
-
-    Ok(MigrationStep::new("create_project_table", m))
-}
-
-pub fn m20241111_000000_create_project_member(_: &TableState) -> Result<MigrationStep> {
-    let up = include_str!("./migrations/20241111_0000000/up.sql");
-    let down = include_str!("./migrations/20241111_0000000/down.sql");
-
-    let m = Manual::up(up).down(down);
-
-    Ok(MigrationStep::new("create_project_members", m))
+    Ok(MigrationStep::new("init_admin_panel", m))
 }

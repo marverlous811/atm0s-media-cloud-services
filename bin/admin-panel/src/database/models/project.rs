@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use welds::{errors::Result, WeldsModel};
 
+use super::project_member::ProjectMember;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectOptions {
     pub create_automatically: Option<bool>,
@@ -42,7 +44,9 @@ impl Default for ProjectCodecs {
 #[welds(db(Sqlite, Postgres))]
 #[welds(BeforeCreate(before_create))]
 #[welds(BeforeUpdate(before_update))]
+#[welds(HasMany(member, ProjectMember, "project_id"))]
 pub struct Project {
+    #[welds(primary_key)]
     pub id: String,
     pub name: String,
     pub owner: String,

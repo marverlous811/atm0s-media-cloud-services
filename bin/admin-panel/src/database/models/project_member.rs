@@ -1,7 +1,24 @@
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 use welds::{errors::Result, WeldsModel};
 
 use super::project::Project;
+
+#[derive(Debug, Clone, Deserialize)]
+pub enum MemberRole {
+    OWNER,
+    ADMIN,
+    MEMBER,
+}
+
+impl fmt::Display for MemberRole {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+        // or, alternatively:
+        // fmt::Debug::fmt(self, f)
+    }
+}
 
 #[derive(Debug, Clone, WeldsModel, Serialize, Deserialize)]
 #[welds(table = "d_project_members")]

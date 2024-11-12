@@ -15,6 +15,11 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
+#[derive(Debug, Serialize)]
+pub struct StatusResponse {
+    pub status: bool,
+}
+
 pub fn to_response<E: Serialize>(response: anyhow::Result<E>) -> impl IntoResponse {
     match response {
         Ok(res) => Response::builder()

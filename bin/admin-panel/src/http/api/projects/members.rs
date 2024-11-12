@@ -1,5 +1,3 @@
-use std::fmt;
-
 use poem::{
     handler,
     web::{Data, Json, Path},
@@ -9,7 +7,7 @@ use serde::Deserialize;
 
 use crate::{
     database::{
-        models::project_member::ProjectInvite,
+        models::project_member::{MemberRole, ProjectInvite},
         repositories::project_invite::{
             create_project_invite, get_project_invite, update_project_invite, CreateProjectInviteDto,
             ProjectInviteFilterDto, ProjectInviteUpdateDto,
@@ -17,22 +15,6 @@ use crate::{
     },
     http::HttpContext,
 };
-
-#[derive(Debug, Deserialize)]
-pub enum MemberRole {
-    #[serde(rename = "admin")]
-    ADMIN,
-    #[serde(rename = "member")]
-    MEMBER,
-}
-
-impl fmt::Display for MemberRole {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-        // or, alternatively:
-        // fmt::Debug::fmt(self, f)
-    }
-}
 
 #[derive(Debug, Deserialize)]
 pub struct ProjectInviteBody {
