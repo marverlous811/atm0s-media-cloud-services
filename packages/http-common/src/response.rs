@@ -8,6 +8,7 @@ where
 {
     pub items: Vec<E>,
     pub total: usize,
+    pub offset: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -30,12 +31,19 @@ pub fn to_response<E: Serialize>(response: anyhow::Result<E>) -> impl IntoRespon
 }
 
 #[allow(unused)]
-pub fn to_response_list<E: Serialize>(response: anyhow::Result<(Vec<E>, usize)>) -> impl IntoResponse {
+pub fn to_response_list<E: Serialize>(response: anyhow::Result<(Vec<E>, usize, usize)>) -> impl IntoResponse {
     match response {
-        Ok((res, total)) => Response::builder()
+        Ok((res, offset, total)) => Response::builder()
             .header("content-type", "application/json; charset=utf-8")
             .header("X-Total-Count", total)
-            .body(serde_json::to_vec(&ListResponse { items: res, total }).expect("should convert to json")),
+            .body(
+                serde_json::to_vec(&ListResponse {
+                    items: res,
+                    offset,
+                    total,
+                })
+                .expect("should convert to json"),
+            ),
         Err(err) => to_response_error(err),
     }
 }

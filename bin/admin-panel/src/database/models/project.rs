@@ -55,6 +55,14 @@ pub struct Project {
     pub codecs: Option<serde_json::Value>,
 }
 
+pub async fn validate_project_table(client: &dyn welds::Client) -> anyhow::Result<Vec<welds::check::Issue>> {
+    let issues = welds::check::schema::<Project>(client).await?;
+    Ok(issues
+        .into_iter()
+        .filter(|i| i.level == welds::check::Level::Critical)
+        .collect())
+}
+
 fn before_create(project: &mut Project) -> Result<()> {
     project.id = uuid::Uuid::new_v4().to_string();
     Ok(())

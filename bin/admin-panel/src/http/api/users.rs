@@ -1,32 +1,18 @@
-use poem::{get, handler, web::Data, Error, IntoResponse, Route};
-use reqwest::StatusCode;
+use clerk_rs::apis::users_api::User;
+use poem::{get, handler, web::Data, IntoResponse, Route};
 
-use crate::{
-    database::{
-        models::user::User,
-        repositories::users::{get_user, UserFilterDto},
-    },
-    http::{middleware::auth::UserId, HttpContext},
-};
+use crate::http::{middleware::clerk_auth::ClerkUserId, HttpContext};
 
 #[handler]
-pub async fn get_me(data: Data<&HttpContext>, user_id: UserId) -> impl IntoResponse {
-    async fn process(data: Data<&HttpContext>, user_id: UserId) -> anyhow::Result<User> {
-        let user = get_user(
-            data.db.clone(),
-            UserFilterDto {
-                id: Some(user_id.into()),
-                email: None,
-            },
-        )
-        .await?;
-        match user {
-            Some(user) => Ok(user),
-            None => anyhow::bail!(Error::from_string("User not found", StatusCode::NOT_FOUND)),
+pub async fn get_me(data: Data<&HttpContext>, user_id: ClerkUserId) -> impl IntoResponse {
+    async fn process(data: Data<&HttpContext>, user_id: String) -> anyhow::Result<clerk_rs::models::User> {
+        match User::get_user(&data.clerk_client, user_id.as_str()).await {
+            Ok(user) => Ok(user),
+            Err(e) => anyhow::bail!(e),
         }
     }
 
-    http_common::response::to_response(process(data, user_id).await)
+    http_common::response::to_response(process(data, user_id.into()).await)
 }
 
 pub fn build_route() -> Route {

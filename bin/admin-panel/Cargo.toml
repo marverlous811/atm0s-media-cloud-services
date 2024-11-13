@@ -23,6 +23,7 @@ uuid = { workspace = true, features = ["v4"] }
 chrono = { workspace = true, features = ["serde"] }
 jsonwebtoken = { workspace = true }
 reqwest = { workspace = true, features = ["json"] }
+clerk-rs = { workspace = true }
 bcrypt = "0.15"
 oauth2 = { version = "4.4.2" }
 

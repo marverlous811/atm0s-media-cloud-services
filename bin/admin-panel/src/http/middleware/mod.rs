@@ -1,2 +1,2 @@
 pub mod api_key_auth;
-pub mod auth;
+pub mod clerk_auth;

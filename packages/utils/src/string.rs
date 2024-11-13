@@ -1,10 +1,18 @@
-use base64::{prelude::BASE64_URL_SAFE_NO_PAD, Engine};
-use rand::{rngs::OsRng, RngCore};
+use rand::{rngs::OsRng, Rng};
 
 pub fn generate_api_key(length: usize) -> String {
-    let mut key = vec![0u8; length];
-    OsRng.fill_bytes(&mut key); // Use a secure random number generator
-    BASE64_URL_SAFE_NO_PAD.encode(key)
+    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                             abcdefghijklmnopqrstuvwxyz\
+                             0123456789";
+    let mut key = String::with_capacity(length);
+
+    for _ in 0..length {
+        // Randomly select a character from the CHARSET
+        let idx = OsRng.gen_range(0..CHARSET.len());
+        key.push(CHARSET[idx] as char);
+    }
+
+    key
 }
 
 #[cfg(test)]

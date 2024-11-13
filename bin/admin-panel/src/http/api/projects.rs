@@ -25,7 +25,7 @@ use crate::{
         },
     },
     http::{
-        middleware::{self, auth::UserId},
+        middleware::{self, clerk_auth::ClerkUserId},
         HttpContext,
     },
 };
@@ -57,7 +57,7 @@ pub struct SyncProjectResponse {
 pub async fn new_project(
     data: Data<&HttpContext>,
     body: Json<CreateProjectBody>,
-    user_id: UserId,
+    user_id: ClerkUserId,
 ) -> impl IntoResponse {
     async fn process(
         data: Data<&HttpContext>,
@@ -93,8 +93,8 @@ pub async fn new_project(
 }
 
 #[handler]
-pub async fn list_projects(data: Data<&HttpContext>, user_id: UserId) -> impl IntoResponse {
-    async fn process(data: Data<&HttpContext>, user_id: String) -> anyhow::Result<(Vec<Project>, usize)> {
+pub async fn list_projects(data: Data<&HttpContext>, user_id: ClerkUserId) -> impl IntoResponse {
+    async fn process(data: Data<&HttpContext>, user_id: String) -> anyhow::Result<(Vec<Project>, usize, usize)> {
         let filter = ProjectFilterDto {
             id: None,
             user_id: Some(user_id),
@@ -104,7 +104,7 @@ pub async fn list_projects(data: Data<&HttpContext>, user_id: UserId) -> impl In
         let projects = get_projects(data.db.clone(), filter.clone(), None, Some(0)).await?;
         let count = count_projects(data.db.clone(), filter.clone()).await?;
 
-        Ok((projects, count as usize))
+        Ok((projects, 0, count as usize))
     }
 
     http_common::response::to_response_list(process(data, user_id.into()).await)
@@ -113,7 +113,7 @@ pub async fn list_projects(data: Data<&HttpContext>, user_id: UserId) -> impl In
 #[handler]
 pub async fn project_detail(
     data: Data<&HttpContext>,
-    user_id: UserId,
+    user_id: ClerkUserId,
     Path(project_id): Path<String>,
 ) -> impl IntoResponse {
     async fn process(data: Data<&HttpContext>, user_id: String, project_id: String) -> anyhow::Result<Project> {
@@ -215,7 +215,7 @@ pub fn build_route(ctx: HttpContext) -> Route {
     Route::new()
         .nest(
             "",
-            build_project_route().with(middleware::auth::AuthMiddleware::new(ctx.clone())),
+            build_project_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
         )
         .nest(
             "/sync",

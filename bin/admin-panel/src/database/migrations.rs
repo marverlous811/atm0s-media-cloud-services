@@ -1,10 +1,11 @@
-use super::models::user::validate_user_table;
 use welds::errors::Result;
 use welds::migrations::{prelude::*, Manual};
 
+use super::models::project::validate_project_table;
+
 pub async fn check_tables(client: &dyn welds::Client) -> anyhow::Result<()> {
     let mut errors = vec![];
-    errors.append(&mut validate_user_table(client).await?);
+    errors.append(&mut validate_project_table(client).await?);
 
     if !errors.is_empty() {
         log::error!("Schema mismatch: found {:?} issues", errors);

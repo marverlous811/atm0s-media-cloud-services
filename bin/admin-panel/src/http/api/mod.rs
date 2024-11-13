@@ -1,13 +1,13 @@
-mod auth;
 mod projects;
 mod users;
-
-pub use auth::UserTokenClaims;
 
 use poem::{get, handler, EndpointExt, IntoResponse, Route};
 use serde::Serialize;
 
-use super::{middleware, HttpContext};
+use super::{
+    middleware::{self},
+    HttpContext,
+};
 
 #[derive(Debug, Serialize)]
 pub struct HealthCheckResponse {
@@ -26,10 +26,9 @@ pub async fn health_check() -> impl IntoResponse {
 pub fn build_route(ctx: HttpContext) -> Route {
     Route::new()
         .nest("/health", get(health_check))
-        .nest("/auth", auth::build_route())
         .nest(
             "/users",
-            users::build_route().with(middleware::auth::AuthMiddleware::new(ctx.clone())),
+            users::build_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
         )
         .nest("/projects", projects::build_route(ctx.clone()))
 }
