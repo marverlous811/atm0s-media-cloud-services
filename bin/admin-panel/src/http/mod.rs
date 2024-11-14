@@ -15,7 +15,7 @@ use clerk_rs::{
 use http_common::response::to_response_error;
 use poem::{
     listener::TcpListener,
-    middleware::{AddData, Tracing},
+    middleware::{AddData, Cors, Tracing},
     EndpointExt, Route, Server,
 };
 use view::build_frontend_route;
@@ -53,6 +53,7 @@ pub async fn run_http(port: u16, db: Arc<dyn welds::Client>, cfg: HttpCfg) -> an
         .nest("/api", api::build_route(ctx.clone()))
         .nest("/", build_frontend_route())
         .with(AddData::new(ctx))
+        .with(Cors::new())
         .with(Tracing)
         .catch_all_error(|e| async move { to_response_error(e.into()) });
 
