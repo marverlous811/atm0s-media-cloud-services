@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input'
 import { useDeleteProjectsMutation, useGetProjectsByIdQuery, useUpdateProjectsMutation } from '@/hooks'
 import { Layout } from '@/layouts'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { filter, includes, map } from 'lodash'
+import { filter, get, includes, map } from 'lodash'
 import { CopyIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,22 +25,23 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: 'This field is required',
   }),
-  options: z.array(z.string()),
+  options: z.object({
+    hook: z.string().optional(),
+    record: z.boolean().optional(),
+  }),
   codecs: z.array(z.string()),
 })
 
 const options = [
   {
-    id: 'admin_mute',
-    label: 'Admins mute',
-  },
-  {
-    id: 'create_automatically',
-    label: 'Create automatically',
-  },
-  {
     id: 'record',
     label: 'Record',
+    type: 'checkbox',
+  },
+  {
+    id: 'hook',
+    label: 'Hook',
+    type: 'input',
   },
 ]
 
@@ -71,7 +72,10 @@ export const ProjectsSettings = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: projectsById?.name,
-      options: [],
+      options: {
+        hook: projectsById?.options?.hook,
+        record: projectsById?.options?.record,
+      },
       codecs: [],
     },
   })
@@ -80,16 +84,9 @@ export const ProjectsSettings = () => {
     if (projectsById) {
       form.setValue('name', projectsById?.name)
 
-      const options = []
-
-      if (projectsById?.options?.admin_mute) {
-        options.push('admin_mute')
-      }
-      if (projectsById?.options?.create_automatically) {
-        options.push('create_automatically')
-      }
-      if (projectsById?.options?.record) {
-        options.push('record')
+      const options = {
+        hook: projectsById?.options?.hook,
+        record: projectsById?.options?.record,
       }
       form.setValue('options', options)
 
@@ -116,9 +113,8 @@ export const ProjectsSettings = () => {
       data: {
         name: values.name,
         options: {
-          admin_mute: includes(values.options, 'admin_mute'),
-          create_automatically: includes(values.options, 'create_automatically'),
-          record: includes(values.options, 'record'),
+          hook: get(values.options, 'hook'),
+          record: get(values.options, 'record') ?? false,
         },
         codecs: {
           h264: includes(values.codecs, 'h264'),
@@ -192,17 +188,27 @@ export const ProjectsSettings = () => {
                             render={({ field }) => {
                               return (
                                 <FormItem key={o.id} className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={includes(field.value, o.id)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, o.id])
-                                          : field.onChange(filter(field.value, (value) => value !== o.id))
-                                      }}
-                                    />
-                                  </FormControl>
                                   <FormLabel className="font-normal">{o.label}</FormLabel>
+                                  <FormControl>
+                                    {o.type === 'checkbox' ? (
+                                      <Checkbox
+                                        checked={get(field.value, o.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange({ ...field.value, [o.id]: true })
+                                            : field.onChange({ ...field.value, [o.id]: false })
+                                        }}
+                                      />
+                                    ) : (
+                                      <Input
+                                        value={get(field.value, o.id)}
+                                        onChange={(e) => {
+                                          console.log(e.target.value)
+                                          field.onChange({ ...field.value, [o.id]: e.target.value })
+                                        }}
+                                      />
+                                    )}
+                                  </FormControl>
                                 </FormItem>
                               )
                             }}

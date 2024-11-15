@@ -6,7 +6,10 @@ use poem::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    database::repositories::project::{get_projects, ProjectFilterDto},
+    database::{
+        models::project::{ProjectCodecs, ProjectOptions},
+        repositories::project::{get_projects, ProjectFilterDto},
+    },
     http::HttpContext,
 };
 
@@ -19,6 +22,10 @@ pub struct SyncProjectQuery {
 pub struct SyncProjectData {
     pub app_id: String,
     pub app_secret: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hook: Option<String>,
+    pub options: ProjectOptions,
+    pub codecs: ProjectCodecs,
 }
 
 #[derive(Debug, Serialize)]
@@ -47,12 +54,28 @@ pub async fn sync_projects(query: Query<SyncProjectQuery>, data: Data<&HttpConte
             None,
         )
         .await?;
+
         Ok(SyncProjectResponse {
             apps: projects
                 .into_iter()
-                .map(|p| SyncProjectData {
-                    app_id: p.id.clone(),
-                    app_secret: p.secret.clone(),
+                .map(|p| {
+                    let options: ProjectOptions = p
+                        .options
+                        .map(|o| serde_json::from_value(o).ok())
+                        .flatten()
+                        .unwrap_or_default();
+                    let codecs: ProjectCodecs = p
+                        .codecs
+                        .map(|o| serde_json::from_value(o).ok())
+                        .flatten()
+                        .unwrap_or_default();
+                    SyncProjectData {
+                        app_id: p.id.clone(),
+                        app_secret: p.secret.clone(),
+                        hook: options.hook.clone(),
+                        options,
+                        codecs,
+                    }
                 })
                 .collect(),
         })

@@ -5,16 +5,16 @@ use super::project_member::ProjectMember;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectOptions {
-    pub create_automatically: Option<bool>,
-    pub admin_mute: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hook: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub record: Option<bool>,
 }
 
 impl Default for ProjectOptions {
     fn default() -> Self {
         Self {
-            create_automatically: Some(true),
-            admin_mute: Some(false),
+            hook: None,
             record: Some(false),
         }
     }
@@ -22,19 +22,23 @@ impl Default for ProjectOptions {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectCodecs {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub h264: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub vp9: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vp8: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub opus: Option<bool>,
-    pub aac: Option<bool>,
 }
 
 impl Default for ProjectCodecs {
     fn default() -> Self {
         Self {
             h264: Some(true),
-            vp9: Some(false),
+            vp9: Some(true),
+            vp8: Some(true),
             opus: Some(true),
-            aac: Some(false),
         }
     }
 }
