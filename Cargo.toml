@@ -22,7 +22,7 @@ rust-embed = "8.0"
 reqwest = "0.12"
 mime_guess = { version = "2.0" }
 hex = "0.4"
-welds = "0.4"
+welds = { git = "https://github.com/giangndm/welds.git", branch = "new-features" }
 sqlx = "0.8"
 uuid = "1.10"
 chrono = "0.4"

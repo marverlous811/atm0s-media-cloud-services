@@ -31,19 +31,19 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let client: Arc<dyn welds::Client> = if args.database_url.starts_with("sqlite:") {
+    let client: Arc<dyn welds::Client> = if args.database_url.starts_with("sqlite") {
         log::info!("Using sqlite database");
         let client = welds::connections::sqlite::connect(&args.database_url).await?;
         database::migrations::migration_up(&client).await?;
         database::migrations::check_tables(&client).await?;
         Arc::from(client)
-    } else if args.database_url.starts_with("postgres:") {
+    } else if args.database_url.starts_with("postgres") {
         log::info!("Using postgres database");
         let client = welds::connections::postgres::connect(&args.database_url).await?;
         database::migrations::migration_up(&client).await?;
         database::migrations::check_tables(&client).await?;
         Arc::from(client)
-    } else if args.database_url.starts_with("mysql:") {
+    } else if args.database_url.starts_with("mysql") {
         log::info!("Using mysql database");
         let client = welds::connections::mysql::connect(&args.database_url).await?;
         database::migrations::migration_up(&client).await?;

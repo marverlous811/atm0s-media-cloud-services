@@ -2838,6 +2838,8 @@ dependencies = [
  "once_cell",
  "paste",
  "percent-encoding",
+ "rustls 0.23.16",
+ "rustls-pemfile 2.2.0",
  "serde",
  "serde_json",
  "sha2",
@@ -2848,6 +2850,7 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
+ "webpki-roots 0.26.6",
 ]
 
 [[package]]
@@ -3682,9 +3685,8 @@ dependencies = [
 
 [[package]]
 name = "welds"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c6c191c07007ca536a2d2c7cc155d8426746820014ca24c9ef7c2931319bd1c"
+version = "0.4.6"
+source = "git+https://github.com/giangndm/welds.git?branch=new-features#d0de10e1400fa9492e8f1aa3e4ce4a7451d3ed60"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3697,9 +3699,8 @@ dependencies = [
 
 [[package]]
 name = "welds-connections"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4bdbec1510d29d8fbdd7720e5e2af542dc69705fcd6007c9a2f9f8c8a04c76a"
+version = "0.4.6"
+source = "git+https://github.com/giangndm/welds.git?branch=new-features#d0de10e1400fa9492e8f1aa3e4ce4a7451d3ed60"
 dependencies = [
  "async-trait",
  "log",
@@ -3709,9 +3710,8 @@ dependencies = [
 
 [[package]]
 name = "welds-macros"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04539e193fff90f5cd27e9986ca1eef3adae0a145839991ecc6ca8d94dc51679"
+version = "0.4.6"
+source = "git+https://github.com/giangndm/welds.git?branch=new-features#d0de10e1400fa9492e8f1aa3e4ce4a7451d3ed60"
 dependencies = [
  "log",
  "proc-macro2",

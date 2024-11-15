@@ -15,8 +15,8 @@ pub fn m20241102_create_projects(_: &TableState) -> Result<MigrationStep> {
         .column(|c| c("owner", Type::String))
         .column(|c| c("name", Type::String))
         .column(|c| c("secret", Type::String).create_unique_index())
-        .column(|c| c("options", Type::String))
-        .column(|c| c("codecs", Type::String))
+        .column(|c| c("options", Type::Json))
+        .column(|c| c("codecs", Type::Json))
         .column(|c| c("created_at", Type::IntBig))
         .column(|c| c("updated_at", Type::IntBig));
     Ok(MigrationStep::new("create projects", m))
