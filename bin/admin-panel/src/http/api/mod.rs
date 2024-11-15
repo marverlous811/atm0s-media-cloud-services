@@ -1,4 +1,5 @@
 mod projects;
+mod sync;
 mod users;
 
 use poem::{get, handler, EndpointExt, IntoResponse, Route};
@@ -25,10 +26,14 @@ pub async fn health_check() -> impl IntoResponse {
 
 pub fn build_route(ctx: HttpContext) -> Route {
     Route::new()
-        .nest("/health", get(health_check))
+        .at("/health", get(health_check))
+        .at("/sync/projects", get(sync::sync_projects))
         .nest(
             "/users",
             users::build_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
         )
-        .nest("/projects", projects::build_route(ctx.clone()))
+        .nest(
+            "/projects",
+            projects::build_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
+        )
 }

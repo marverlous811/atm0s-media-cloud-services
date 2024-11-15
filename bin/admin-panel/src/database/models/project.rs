@@ -53,6 +53,8 @@ pub struct Project {
     pub secret: String,
     pub options: Option<serde_json::Value>,
     pub codecs: Option<serde_json::Value>,
+    pub created_at: i64,
+    pub updated_at: i64,
 }
 
 pub async fn validate_project_table(client: &dyn welds::Client) -> anyhow::Result<Vec<welds::check::Issue>> {
@@ -65,9 +67,12 @@ pub async fn validate_project_table(client: &dyn welds::Client) -> anyhow::Resul
 
 fn before_create(project: &mut Project) -> Result<()> {
     project.id = uuid::Uuid::new_v4().to_string();
+    project.created_at = chrono::Utc::now().timestamp_millis();
+    project.updated_at = chrono::Utc::now().timestamp_millis();
     Ok(())
 }
 
-fn before_update(_project: &mut Project) -> Result<()> {
+fn before_update(project: &mut Project) -> Result<()> {
+    project.updated_at = chrono::Utc::now().timestamp_millis();
     Ok(())
 }

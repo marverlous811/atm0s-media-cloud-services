@@ -3,12 +3,12 @@ mod members;
 use http_common::response::StatusResponse;
 use members::invite;
 use poem::{
-    get, handler, post, put,
+    handler, post, put,
     web::{Data, Json, Path},
-    EndpointExt, Error, IntoResponse, Route,
+    Error, IntoResponse, Route,
 };
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::{
     database::{
@@ -24,10 +24,7 @@ use crate::{
             project_member::{create_project_member, CreateProjectMemberDto},
         },
     },
-    http::{
-        middleware::{self, clerk_auth::ClerkUserId},
-        HttpContext,
-    },
+    http::{middleware::clerk_auth::ClerkUserId, HttpContext},
 };
 
 #[derive(Debug, Deserialize)]
@@ -40,17 +37,6 @@ pub struct UpdateProjectBody {
     pub name: Option<String>,
     pub options: Option<ProjectOptions>,
     pub codecs: Option<ProjectCodecs>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct SyncProjectData {
-    pub app_id: String,
-    pub app_secret: String,
-}
-
-#[derive(Debug, Serialize)]
-pub struct SyncProjectResponse {
-    apps: Vec<SyncProjectData>,
 }
 
 #[handler]
@@ -172,35 +158,6 @@ pub async fn project_delete(data: Data<&HttpContext>, Path(project_id): Path<Str
     http_common::response::to_response(process(data, project_id).await)
 }
 
-#[handler]
-pub async fn sync_projects(data: Data<&HttpContext>) -> impl IntoResponse {
-    async fn process(data: Data<&HttpContext>) -> anyhow::Result<SyncProjectResponse> {
-        let projects = get_projects(
-            data.db.clone(),
-            ProjectFilterDto {
-                id: None,
-                owner: None,
-                name: None,
-                user_id: None,
-            },
-            None,
-            None,
-        )
-        .await?;
-        Ok(SyncProjectResponse {
-            apps: projects
-                .into_iter()
-                .map(|p| SyncProjectData {
-                    app_id: p.id.clone(),
-                    app_secret: p.secret.clone(),
-                })
-                .collect(),
-        })
-    }
-
-    http_common::response::to_response(process(data).await)
-}
-
 pub fn build_project_route() -> Route {
     Route::new()
         .at(
@@ -211,14 +168,6 @@ pub fn build_project_route() -> Route {
         .at("/", post(new_project).get(list_projects))
 }
 
-pub fn build_route(ctx: HttpContext) -> Route {
-    Route::new()
-        .nest(
-            "",
-            build_project_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
-        )
-        .nest(
-            "/sync",
-            get(sync_projects).with(middleware::api_key_auth::ApiKeyAuthMiddleware::new(ctx.clone())),
-        )
+pub fn build_route() -> Route {
+    Route::new().nest("", build_project_route())
 }

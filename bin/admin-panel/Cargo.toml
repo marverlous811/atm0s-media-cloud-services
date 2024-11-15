@@ -24,8 +24,8 @@ chrono = { workspace = true, features = ["serde"] }
 jsonwebtoken = { workspace = true }
 reqwest = { workspace = true, features = ["json"] }
 clerk-rs = { workspace = true }
-bcrypt = "0.15"
-oauth2 = { version = "4.4.2" }
+bcrypt = { workspace = true }
+oauth2 = { workspace = true }
 
 [[bin]]
 name = "server"

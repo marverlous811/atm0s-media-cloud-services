@@ -10,7 +10,6 @@ pub fn build_frontend_route() -> Route {
     #[cfg(debug_assertions)]
     {
         use poem::EndpointExt;
-        //TODO: fix loop request
         let pconfig = http_common::dev_proxy::ProxyConfig::new("localhost:5173")
             .web_insecure() // Enables proxy-ing web requests, sets the proxy to use http instead of https
             .enable_nesting() // Sets the proxy to support nested routes

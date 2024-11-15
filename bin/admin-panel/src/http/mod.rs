@@ -22,7 +22,7 @@ use view::build_frontend_route;
 
 #[derive(Clone)]
 pub struct HttpCfg {
-    pub api_key: String,
+    pub cluster_secret: String,
     pub clerk_secret: String,
 }
 

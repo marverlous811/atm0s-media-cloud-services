@@ -7,14 +7,14 @@ use tracing_subscriber::prelude::*;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    #[arg(env, long, default_value_t = 8080)]
+    #[arg(env, long, default_value_t = 9090)]
     port: u16,
 
-    #[arg(env, long, default_value = "postgres://postgres:postgres@localhost:5432/postgres")]
+    #[arg(env, long, default_value = "sqlite:admin-panel.db?mode=rwc")]
     database_url: String,
 
     #[arg(env, long, default_value = "insecure")]
-    api_key: String,
+    cluster_secret: String,
 
     #[arg(env, long)]
     clerk_secret: String,
@@ -43,6 +43,12 @@ async fn main() -> anyhow::Result<()> {
         database::migrations::migration_up(&client).await?;
         database::migrations::check_tables(&client).await?;
         Arc::from(client)
+    } else if args.database_url.starts_with("mysql:") {
+        log::info!("Using mysql database");
+        let client = welds::connections::mysql::connect(&args.database_url).await?;
+        database::migrations::migration_up(&client).await?;
+        database::migrations::check_tables(&client).await?;
+        Arc::from(client)
     } else {
         anyhow::bail!("Unsupported database url: {}", args.database_url)
     };
@@ -51,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
         args.port,
         client,
         http::HttpCfg {
-            api_key: args.api_key,
+            cluster_secret: args.cluster_secret,
             clerk_secret: args.clerk_secret,
         },
     )
