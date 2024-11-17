@@ -1,45 +1,39 @@
-'use client'
-
-import { FolderPlusIcon, FolderSyncIcon, FolderTreeIcon, MoreHorizontal } from 'lucide-react'
-
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { useGetProjectsByIdQuery } from '@/hooks'
+import { FolderPlusIcon, FolderSyncIcon, FolderTreeIcon, MoreHorizontal } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export const NavProjects = () => {
   const navigate = useNavigate()
   const { isMobile } = useSidebar()
-  const { data: projectsById, isFetching: isFetchingGetProjectsById } = useGetProjectsByIdQuery()
+  const { data: projectsById, isPending: isPendingGetProjectsById } = useGetProjectsByIdQuery()
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton>
-            {!isFetchingGetProjectsById ? (
-              <>
-                <FolderTreeIcon />
-                <span>{projectsById?.name}</span>
-              </>
-            ) : (
-              <TitleLoader />
-            )}
-          </SidebarMenuButton>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuAction showOnHover>
-                <MoreHorizontal />
-              </SidebarMenuAction>
+              <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                {!isPendingGetProjectsById ? (
+                  <>
+                    <FolderTreeIcon />
+                    <span>{projectsById?.name}</span>
+                  </>
+                ) : (
+                  <TitleLoader />
+                )}{' '}
+                <MoreHorizontal className="ml-auto" />
+              </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48" side={isMobile ? 'bottom' : 'right'} align={isMobile ? 'end' : 'start'}>
               <DropdownMenuItem
@@ -47,7 +41,7 @@ export const NavProjects = () => {
                   navigate('/projects')
                 }}
               >
-                <FolderSyncIcon className="text-muted-foreground" />
+                <FolderSyncIcon />
                 <span>Change Project</span>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -55,7 +49,7 @@ export const NavProjects = () => {
                   navigate('/projects/create')
                 }}
               >
-                <FolderPlusIcon className="text-muted-foreground" />
+                <FolderPlusIcon />
                 <span>Create Project</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

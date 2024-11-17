@@ -6,10 +6,10 @@ import { useNavigate } from 'react-router-dom'
 
 export const Loading = () => {
   const navigate = useNavigate()
-  const { data: projects, isFetching: isFetchingProjects } = useGetProjectsQuery()
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjectsQuery()
 
   useEffect(() => {
-    if (!isFetchingProjects && isArray(projects?.items)) {
+    if (!isLoadingProjects && isArray(projects?.items)) {
       if (!isEmpty(projects?.items)) {
         if (projects?.items?.length === 1) {
           navigate(`/projects/${projects?.items?.[0]?.id}`, { replace: true })
@@ -20,7 +20,7 @@ export const Loading = () => {
         navigate('/projects/create', { replace: true })
       }
     }
-  }, [isFetchingProjects, navigate, projects])
+  }, [isLoadingProjects, navigate, projects])
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

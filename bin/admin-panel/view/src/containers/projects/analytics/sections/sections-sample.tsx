@@ -43,11 +43,11 @@ export const SectionsSample: React.FC<Props> = () => {
           <CardFooter className="gap-4">
             <Button size="sm" className="gap-2">
               <ArrowUpRightIcon size={16} />
-              Try demo
+              Try Demo
             </Button>
             <Button size="sm" variant="secondary" className="gap-2">
               <GitHubLogoIcon className="h-4 w-4" />
-              View source
+              View Source
             </Button>
           </CardFooter>
         </Card>

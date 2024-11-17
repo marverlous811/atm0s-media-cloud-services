@@ -10,7 +10,7 @@ type Props = {
 export * from './nav-user'
 
 export const Layout: React.FC<Props> = ({ children }) => {
-  const { data: projectsById, isFetching: isFetchingGetProjectsById } = useGetProjectsByIdQuery()
+  const { data: projectsById, isPending: isPendingGetProjectsById } = useGetProjectsByIdQuery()
 
   return (
     <SidebarProvider>
@@ -21,7 +21,7 @@ export const Layout: React.FC<Props> = ({ children }) => {
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div>
-              {!isFetchingGetProjectsById ? (
+              {!isPendingGetProjectsById ? (
                 <h1 className="flex-1 text-xl font-semibold">{projectsById?.name}</h1>
               ) : (
                 <TitleLoader />

@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { Theme, useTheme } from '@/providers'
-import { useUser, useClerk } from '@clerk/clerk-react'
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut, SunMoonIcon } from 'lucide-react'
 
 export const NavUser = () => {
@@ -97,23 +97,18 @@ type UserAvatarProps = {
   hasArrow?: boolean
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ hasArrow }) => {
+export const UserAvatar: React.FC<UserAvatarProps> = ({ hasArrow }) => {
   const { user } = useUser()
-
-  const avatar = user?.imageUrl as string
-  const name = user?.fullName as string
-  const firstLetter = name?.split('')?.[0]
-  const email = user?.primaryEmailAddress?.emailAddress as string
 
   return (
     <>
       <Avatar className="h-8 w-8 rounded-lg">
-        <AvatarImage src={avatar} alt={name} />
-        <AvatarFallback className="rounded-lg">{firstLetter}</AvatarFallback>
+        <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
+        <AvatarFallback className="rounded-lg">{user?.fullName?.split('')?.[0]}</AvatarFallback>
       </Avatar>
       <div className="grid flex-1 text-left text-sm leading-tight">
-        <span className="truncate font-semibold">{name}</span>
-        <span className="truncate text-xs">{email}</span>
+        <span className="truncate font-semibold">{user?.fullName}</span>
+        <span className="truncate text-xs">{user?.primaryEmailAddress?.emailAddress}</span>
       </div>
       {hasArrow && <ChevronsUpDown className="ml-auto size-4" />}
     </>

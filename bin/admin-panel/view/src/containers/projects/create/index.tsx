@@ -49,7 +49,7 @@ export const ProjectsCreate = () => {
           <div className="bg-divide h-[1px] w-full" />
           <div className="grid gap-4">
             <div className="grid gap-1.5">
-              <p className="text-center text-xl font-medium capitalize">Create new project</p>
+              <p className="text-center text-xl font-medium">Create New Project</p>
               <p className="text-center text-xs text-muted-foreground">
                 You will be brought to your project dashboard after creating your application.
               </p>
@@ -61,7 +61,7 @@ export const ProjectsCreate = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Project name</FormLabel>
+                      <FormLabel>Project Name</FormLabel>
                       <FormControl>
                         <Input placeholder="Enter your project name" {...field} />
                       </FormControl>
@@ -89,7 +89,7 @@ export const ProjectsCreate = () => {
                   }}
                   variant="outline"
                 >
-                  You are already have a project?
+                  You Are Already Have A Project?
                 </Button>
               </>
             )}

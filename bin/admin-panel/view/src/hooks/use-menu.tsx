@@ -19,7 +19,6 @@ export const useMenu = () => {
         title: 'Analytics',
         url: projectUrl,
         icon: ChartPieIcon,
-        isActive: true,
       },
       {
         title: 'Sessions',
@@ -46,16 +45,8 @@ export const useMenu = () => {
             url: `${projectUrl}/settings`,
           },
           {
-            title: 'Keys',
-            url: `${projectUrl}/settings/keys`,
-          },
-          {
-            title: 'Webhooks',
-            url: `${projectUrl}/settings/webhooks`,
-          },
-          {
             title: 'Members',
-            url: `${projectUrl}/settings/members`,
+            url: `${projectUrl}/members`,
           },
         ],
       },

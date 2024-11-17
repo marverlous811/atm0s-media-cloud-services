@@ -133,10 +133,10 @@ export const SectionsBandwidth: React.FC<Props> = () => {
           {['upstream', 'downstream'].map((key) => {
             const chart = key as keyof typeof chartConfig
             return (
-              <button
+              <div
                 key={chart}
                 data-active={activeChart === chart}
-                className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="whitespace-nowrap text-xs capitalize text-muted-foreground">
@@ -146,7 +146,7 @@ export const SectionsBandwidth: React.FC<Props> = () => {
                   {total[key as keyof typeof total].toLocaleString()}
                   <span className="font-light">mb</span>
                 </span>
-              </button>
+              </div>
             )
           })}
         </div>

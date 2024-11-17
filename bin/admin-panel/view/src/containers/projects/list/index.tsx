@@ -6,22 +6,25 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetProjectsQuery } from '@/hooks'
 import { NavUser } from '@/layouts'
+import dayjs from 'dayjs'
 import { isEmpty, map, sortBy } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const ProjectsList = () => {
   const navigate = useNavigate()
-  const { data: projects, isFetching: isFetchingProjects } = useGetProjectsQuery()
+  const { data: projects, isPending: isPendingProjects } = useGetProjectsQuery()
   const [selectedProject, setSelectedProject] = useState<string>()
 
   useEffect(() => {
-    if (isEmpty(projects?.items)) {
-      navigate('/projects/create')
-      return
+    if (!isPendingProjects) {
+      if (isEmpty(projects?.items)) {
+        navigate('/projects/create')
+        return
+      }
+      setSelectedProject(projects?.items?.[0]?.id)
     }
-    setSelectedProject(projects?.items?.[0]?.id)
-  }, [navigate, projects?.items])
+  }, [isPendingProjects, navigate, projects?.items])
 
   return (
     <SidebarProvider>
@@ -34,17 +37,15 @@ export const ProjectsList = () => {
               <p className="text-center text-xl font-medium capitalize">Select a project</p>
               <p className="text-center text-xs text-muted-foreground">Choose a project to view its details</p>
             </div>
-            {!isFetchingProjects ? (
+            {!isPendingProjects ? (
               <div className="grid gap-2">
                 <RadioGroup value={selectedProject} onValueChange={(value) => setSelectedProject(value)}>
                   {map(sortBy(projects?.items, 'name'), (p) => (
-                    <div
-                      key={p.id}
-                      className="flex h-10 items-center space-x-2 rounded-lg border border-muted-foreground px-4"
-                    >
+                    <div key={p.id} className="flex h-10 items-center space-x-2 rounded-md border px-4 py-2 shadow-sm">
                       <RadioGroupItem value={p.id} id={p.id} />
-                      <Label className="flex h-full flex-1 cursor-pointer items-center" htmlFor={p.id}>
-                        {p.name}
+                      <Label className="flex h-full flex-1 cursor-pointer items-center justify-between" htmlFor={p.id}>
+                        <span className="font-semibold">{p.name}</span>
+                        <span className="text-xs text-muted-foreground">{dayjs(p.createdAt).format('MMM D, YYYY')}</span>
                       </Label>
                     </div>
                   ))}
@@ -77,7 +78,7 @@ export const ProjectsList = () => {
               }}
               variant="outline"
             >
-              Create a new project
+              Create A New Project
             </Button>
           </div>
         </div>

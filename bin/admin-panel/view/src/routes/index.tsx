@@ -5,6 +5,7 @@ import {
   ProjectsBilling,
   ProjectsCreate,
   ProjectsList,
+  ProjectsMembers,
   ProjectsRooms,
   ProjectsSessions,
   ProjectsSettings,
@@ -63,6 +64,14 @@ export const routes = createBrowserRouter([
     element: (
       <PrivateProvider>
         <ProjectsSettings />
+      </PrivateProvider>
+    ),
+  },
+  {
+    path: '/projects/:id/members',
+    element: (
+      <PrivateProvider>
+        <ProjectsMembers />
       </PrivateProvider>
     ),
   },
