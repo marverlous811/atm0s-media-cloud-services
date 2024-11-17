@@ -61,13 +61,11 @@ pub async fn sync_projects(query: Query<SyncProjectQuery>, data: Data<&HttpConte
                 .map(|p| {
                     let options: ProjectOptions = p
                         .options
-                        .map(|o| serde_json::from_value(o).ok())
-                        .flatten()
+                        .and_then(|o| serde_json::from_value(o).ok())
                         .unwrap_or_default();
                     let codecs: ProjectCodecs = p
                         .codecs
-                        .map(|o| serde_json::from_value(o).ok())
-                        .flatten()
+                        .and_then(|o| serde_json::from_value(o).ok())
                         .unwrap_or_default();
                     SyncProjectData {
                         app_id: p.id.clone(),
