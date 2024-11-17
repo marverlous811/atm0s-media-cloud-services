@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use admin_panel::{database, http};
+use atm0s_cloud_admin_panel::{database, http};
 use clap::Parser;
 use tracing_subscriber::prelude::*;
 

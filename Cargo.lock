@@ -18,34 +18,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "512761e0bb2578dd7380c6baaa0f4ce03e84f95e960231d1dec8bf4d7d6e2627"
 
 [[package]]
-name = "admin-panel"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "atm0s-media-cloud-utils",
- "bcrypt",
- "chrono",
- "clap",
- "clerk-rs",
- "env_logger",
- "http-common",
- "jsonwebtoken",
- "log",
- "oauth2",
- "poem",
- "poem-openapi",
- "reqwest 0.12.9",
- "rust-embed",
- "serde",
- "serde_json",
- "sqlx",
- "tokio",
- "tracing-subscriber",
- "uuid",
- "welds",
-]
-
-[[package]]
 name = "aead"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -195,8 +167,51 @@ dependencies = [
 ]
 
 [[package]]
-name = "atm0s-media-cloud-utils"
-version = "0.1.0"
+name = "atm0s-cloud-admin-panel"
+version = "0.1.0-rc.1"
+dependencies = [
+ "anyhow",
+ "atm0s-cloud-http-common",
+ "atm0s-cloud-utils",
+ "bcrypt",
+ "chrono",
+ "clap",
+ "clerk-rs",
+ "env_logger",
+ "jsonwebtoken",
+ "log",
+ "oauth2",
+ "poem",
+ "poem-openapi",
+ "reqwest 0.12.9",
+ "rust-embed",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "tracing-subscriber",
+ "uuid",
+ "welds",
+]
+
+[[package]]
+name = "atm0s-cloud-http-common"
+version = "0.1.0-rc.1"
+dependencies = [
+ "anyhow",
+ "hex",
+ "log",
+ "mime_guess",
+ "poem",
+ "reqwest 0.12.9",
+ "rust-embed",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "atm0s-cloud-utils"
+version = "0.1.0-rc.1"
 dependencies = [
  "base64 0.22.1",
  "rand",
@@ -1106,21 +1121,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "http-common"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "hex",
- "log",
- "mime_guess",
- "poem",
- "reqwest 0.12.9",
- "rust-embed",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "httparse"
 version = "1.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1501,9 +1501,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.162"
+version = "0.2.164"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18d287de67fe55fd7e1581fe933d965a5a9477b38e949cfa9f8574ef01506398"
+checksum = "433bfe06b8c75da9b2e3fbea6e5329ff87748f0b144ef75306e674c3f6f7c13f"
 
 [[package]]
 name = "libm"

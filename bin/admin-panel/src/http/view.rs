@@ -18,7 +18,7 @@ pub fn build_frontend_route() -> Route {
         log::info!("Running in development mode, starting Vite dev server...");
         std::process::Command::new("pnpm")
             .current_dir("./view/")
-            .args(&["run", "dev"])
+            .args(["run", "dev"])
             .stdout(std::process::Stdio::inherit())
             .stderr(std::process::Stdio::inherit())
             .spawn()

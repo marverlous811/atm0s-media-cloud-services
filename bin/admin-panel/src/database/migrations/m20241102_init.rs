@@ -1,7 +1,7 @@
 use welds::errors::Result;
 use welds::migrations::prelude::*;
 
-pub fn up<'a>() -> Vec<MigrationFn> {
+pub fn up() -> Vec<MigrationFn> {
     vec![
         m20241102_create_projects,
         m20241102_create_project_invites,

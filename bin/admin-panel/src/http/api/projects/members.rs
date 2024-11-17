@@ -50,7 +50,7 @@ pub async fn invite(
                     data.db.clone(),
                     invite.id,
                     ProjectInviteUpdateDto {
-                        expire_at: (chrono::Utc::now().timestamp_millis() + 2 * 24 * 60 * 60 * 1000) as i64,
+                        expire_at: (chrono::Utc::now().timestamp_millis() + 2 * 24 * 60 * 60 * 1000),
                     },
                 )
                 .await
@@ -62,7 +62,7 @@ pub async fn invite(
                         project_id: project_id.clone(),
                         email: body.email.clone(),
                         role: body.role.to_string(),
-                        expire_at: (chrono::Utc::now().timestamp_millis() + 2 * 24 * 60 * 60 * 1000) as i64,
+                        expire_at: (chrono::Utc::now().timestamp_millis() + 2 * 24 * 60 * 60 * 1000),
                     },
                 )
                 .await

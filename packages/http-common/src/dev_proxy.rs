@@ -1,3 +1,5 @@
+//! This is copy from Poem-proxy, but I've updated with the latest version of Poem.
+//!
 //! Poem-proxy is a simple and easy-to-use proxy [Endpoint](poem::Endpoint) compatible with the
 //! [Poem Web Framework](poem). It supports the forwarding of http get and post requests
 //! as well as websockets right out of the box!
@@ -12,11 +14,10 @@
 //!
 //! ```
 //! use poem::{get, handler, listener::TcpListener, web::Path, IntoResponse, Route, Server, EndpointExt};
-//! use poem_proxy::{proxy, ProxyConfig};
+//! use atm0s_cloud_http_common::dev_proxy::{proxy, ProxyConfig};
 //!
 //! let pconfig = ProxyConfig::new( "localhost:5173" )
 //!     .web_insecure()   // Enables proxy-ing web requests, sets the proxy to use http instead of https
-//!     .ws_insecure()    // Enables proxy-ing web sockets, sets the proxy to use ws instead of wss
 //!     .enable_nesting() // Sets the proxy to support nested routes
 //!     .finish();        // Finishes constructing the configuration
 //!
@@ -33,7 +34,7 @@
 //! overview:
 //!
 //! ```
-//! use poem_proxy::ProxyConfig;
+//! use atm0s_cloud_http_common::dev_proxy::ProxyConfig;
 //!     
 //! // Configure proxy endpoint, pass in the target server address and port number
 //! let proxy_config = ProxyConfig::new( "localhost:5173" ) // 5173 is for Sveltekit
@@ -41,10 +42,6 @@
 //!     // One of the following lines is required to proxy web requests (post, get, etc)
 //!     .web_insecure() // http from proxy to server
 //!     .web_secure()   // https from proxy to server
-//!
-//!     // One of the following lines is required to proxy websockets
-//!     .ws_insecure()  // ws from proxy to server
-//!     .ws_secure()    // wss from proxy to server
 //!
 //!     // The following option is required to support nesting
 //!     .enable_nesting()
@@ -116,7 +113,7 @@ impl ProxyConfig {
     /// and sets all other parameters to their default values. See
     /// [the default implementation](ProxyConfig::default) for more
     /// information.
-    pub fn new<'a>(target: impl Into<String>) -> ProxyConfig {
+    pub fn new(target: impl Into<String>) -> ProxyConfig {
         ProxyConfig {
             proxy_target: target.into(),
             ..ProxyConfig::default()
@@ -126,7 +123,7 @@ impl ProxyConfig {
     /// This function sets the endpoint to forward requests to the
     /// target over the https protocol. This is a secure and encrypted
     /// communication channel that should be utilized when possible.
-    pub fn web_secure<'a>(&'a mut self) -> &'a mut ProxyConfig {
+    pub fn web_secure(&mut self) -> &mut ProxyConfig {
         self.web_secure = Some(true);
         self
     }
@@ -134,7 +131,7 @@ impl ProxyConfig {
     /// This function sets the endpoint to forward requests to the
     /// target over the http protocol. This is an insecure and unencrypted
     /// communication channel that should be used very carefully.
-    pub fn web_insecure<'a>(&'a mut self) -> &'a mut ProxyConfig {
+    pub fn web_insecure(&mut self) -> &mut ProxyConfig {
         self.web_secure = Some(false);
         self
     }
@@ -145,7 +142,7 @@ impl ProxyConfig {
     /// if `endpoint.target` is `https://google.com` and the proxy is reached
     /// at `https://proxy_address/favicon.png`, the proxy server will forward
     /// the request to `https://google.com/favicon.png`.
-    pub fn enable_nesting<'a>(&'a mut self) -> &'a mut ProxyConfig {
+    pub fn enable_nesting(&mut self) -> &mut ProxyConfig {
         self.support_nesting = true;
         self
     }
@@ -156,15 +153,15 @@ impl ProxyConfig {
     /// if `endpoint.target` is `https://google.com` and the proxy is reached
     /// at `https://proxy_address/favicon.png`, the proxy server will forward
     /// the request to `https://google.com`.
-    pub fn disable_nesting<'a>(&'a mut self) -> &'a mut ProxyConfig {
+    pub fn disable_nesting(&mut self) -> &mut ProxyConfig {
         self.support_nesting = false;
         self
     }
 
-    /// Finishes off the building proccess by returning a new ProxyConfig object
+    /// Finishes off the building process by returning a new ProxyConfig object
     /// (not reference) that contains all the settings that were previously
     /// specified.
-    pub fn finish<'a>(&'a mut self) -> ProxyConfig {
+    pub fn finish(&mut self) -> ProxyConfig {
         self.clone()
     }
 }
@@ -179,6 +176,7 @@ impl ProxyConfig {
     /// An example output would be
     ///
     /// > `"https://proxy.domain.com"`
+    #[allow(clippy::result_unit_err)]
     pub fn get_web_request_uri(&self, subpath: Option<String>) -> Result<String, ()> {
         let Some(secure) = self.web_secure else {
             return Err(());
@@ -190,15 +188,12 @@ impl ProxyConfig {
             format!("http://{}", self.proxy_target)
         };
 
-        let sub = if self.support_nesting && subpath.is_some() {
-            subpath.unwrap()
-        } else {
-            "".into()
-        };
-
-        println!("base: {} | sub: {}", base, sub);
-
-        Ok(base + &sub)
+        Ok(base
+            + self
+                .support_nesting
+                .then_some(subpath.as_deref())
+                .flatten()
+                .unwrap_or_default())
     }
 }
 

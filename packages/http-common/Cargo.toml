@@ -1,6 +1,6 @@
 [package]
-name = "http-common"
-version = "0.1.0"
+name = "atm0s-cloud-http-common"
+version = "0.1.0-rc.1"
 edition = "2021"
 
 [dependencies]

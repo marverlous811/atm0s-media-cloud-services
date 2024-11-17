@@ -57,7 +57,7 @@ pub async fn run_http(port: u16, db: Arc<dyn welds::Client>, cfg: HttpCfg) -> an
         .with(Tracing)
         .catch_all_error(|e| async move { to_response_error(e.into()) });
 
-    let _ = Server::new(TcpListener::bind(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), port)))
+    Server::new(TcpListener::bind(SocketAddr::new(Ipv4Addr::UNSPECIFIED.into(), port)))
         .name("admin-panel")
         .run(app)
         .await?;

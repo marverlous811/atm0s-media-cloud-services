@@ -50,7 +50,7 @@ pub async fn new_project(
         body: Json<CreateProjectBody>,
         user_id: String,
     ) -> anyhow::Result<Project> {
-        let secret = atm0s_media_cloud_utils::string::generate_api_key(32);
+        let secret = utils::string::generate_api_key(32);
         let project = create_project(
             data.db.clone(),
             CreateProjectDto {

@@ -37,17 +37,14 @@ pub struct RequestWrapper<'a> {
 
 impl<'a> ClerkRequest for RequestWrapper<'a> {
     fn get_header(&self, key: &str) -> Option<String> {
-        match self.req.headers().get(key) {
-            Some(header) => Some(header.to_str().expect("header must be a string").to_string()),
-            None => None,
-        }
+        self.req
+            .headers()
+            .get(key)
+            .map(|header| header.to_str().expect("header must be a string").to_string())
     }
 
     fn get_cookie(&self, key: &str) -> Option<String> {
-        match self.req.cookie().get(key) {
-            Some(cookie) => Some(cookie.value_str().to_string()),
-            None => None,
-        }
+        self.req.cookie().get(key).map(|cookie| cookie.value_str().to_string())
     }
 }
 
