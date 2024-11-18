@@ -1,3 +1,4 @@
+mod configs;
 mod projects;
 mod sync;
 mod users;
@@ -28,6 +29,7 @@ pub fn build_route(ctx: HttpContext) -> Route {
     Route::new()
         .at("/health", get(health_check))
         .at("/sync/projects", get(sync::sync_projects))
+        .nest("/configs", configs::build_route())
         .nest(
             "/users",
             users::build_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),

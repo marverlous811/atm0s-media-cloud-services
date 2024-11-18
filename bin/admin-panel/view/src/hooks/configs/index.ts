@@ -1,0 +1,1 @@
+export * from './use-get-view-config-query'

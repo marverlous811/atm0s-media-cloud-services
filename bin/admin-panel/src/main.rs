@@ -18,6 +18,9 @@ struct Args {
 
     #[arg(env, long)]
     clerk_secret: String,
+
+    #[arg(env, long)]
+    clerk_publishable_key: String,
 }
 
 #[tokio::main]
@@ -59,6 +62,7 @@ async fn main() -> anyhow::Result<()> {
         http::HttpCfg {
             cluster_secret: args.cluster_secret,
             clerk_secret: args.clerk_secret,
+            clerk_publishable_key: args.clerk_publishable_key,
         },
     )
     .await?;

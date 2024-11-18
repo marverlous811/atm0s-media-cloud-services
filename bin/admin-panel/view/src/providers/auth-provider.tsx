@@ -1,16 +1,15 @@
-import { env } from '@/config'
+import { useGetConfigsViewQuery } from '@/hooks'
 import { ClerkProvider } from '@clerk/clerk-react'
 
 type Props = {
   children: React.ReactNode
 }
 
-const PUBLISHABLE_KEY = env.CLERK_PUBLISHABLE_KEY
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error('Add your Clerk publishable key to the .env.local file')
-}
-
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-  return <ClerkProvider publishableKey={PUBLISHABLE_KEY}>{children}</ClerkProvider>
+  const { data: configsView } = useGetConfigsViewQuery()
+  if (!configsView?.clerk_publishable_key) {
+    return <>Loading...</>
+  } else {
+    return <ClerkProvider publishableKey={configsView?.clerk_publishable_key}>{children}</ClerkProvider>
+  }
 }
