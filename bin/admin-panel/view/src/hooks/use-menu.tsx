@@ -1,4 +1,3 @@
-import { IconBrandDiscord } from '@tabler/icons-react'
 import {
   AlignHorizontalDistributeCenterIcon,
   ArrowLeftRightIcon,
@@ -6,6 +5,7 @@ import {
   ChartPieIcon,
   CreditCardIcon,
   Settings2Icon,
+  UsersIcon
 } from 'lucide-react'
 import { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
@@ -60,7 +60,7 @@ export const useMenu = () => {
       {
         title: 'Discord',
         url: 'https://discord.gg/g5KYHRKS52',
-        icon: IconBrandDiscord,
+        icon: UsersIcon,
       },
     ],
   }
