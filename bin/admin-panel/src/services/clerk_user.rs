@@ -51,7 +51,7 @@ impl ClerkUserService {
         match user {
             Some(user) => match user.email_addresses {
                 Some(emails) => {
-                    if emails.len() > 0 {
+                    if !emails.is_empty() {
                         Ok(emails[0].email_address.clone())
                     } else {
                         anyhow::bail!("User has no email addresses")

@@ -80,10 +80,10 @@ impl<E: Endpoint> Endpoint for WorkspaceMiddlewareImpl<E> {
             }
             Err(err) => {
                 log::error!("Error: {:?}", err);
-                return Err(Error::from_string(
+                Err(Error::from_string(
                     "internal server error",
                     StatusCode::INTERNAL_SERVER_ERROR,
-                ));
+                ))
             }
         }
     }

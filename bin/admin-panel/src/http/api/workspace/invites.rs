@@ -96,7 +96,7 @@ pub async fn invite(
                 let invite = create_workspace_member_invite(
                     data.db.clone(),
                     crate::database::repositories::workspace_invite::WorkspaceMembersInviteCreate {
-                        workspace_id: workspace_id,
+                        workspace_id,
                         email: body.email.clone(),
                         expires,
                     },
@@ -125,7 +125,6 @@ pub async fn accept_invite(
                 workspace_id: Some(params.workspace_id.clone()),
                 email: Some(email.clone()),
                 id: Some(params.invite_id),
-                ..Default::default()
             },
         )
         .await?;
@@ -176,7 +175,6 @@ pub async fn decline_invite(
                 workspace_id: Some(params.workspace_id.clone()),
                 email: Some(email.clone()),
                 id: Some(params.invite_id),
-                ..Default::default()
             },
         )
         .await?;
