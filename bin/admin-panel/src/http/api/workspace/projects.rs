@@ -1,7 +1,7 @@
 use poem::{
-    get, handler, post,
+    handler,
     web::{Data, Json, Path},
-    Error, IntoResponse, Route,
+    Error, IntoResponse,
 };
 use reqwest::StatusCode;
 use serde::Deserialize;
@@ -112,20 +112,21 @@ pub async fn project_detail(
 #[handler]
 pub async fn project_update(
     data: Data<&HttpContext>,
-    Path(Params {
-        workspace_id,
-        project_id,
-    }): Path<Params>,
+    Path(params): Path<Params>,
     body: Json<UpdateProjectBody>,
 ) -> impl IntoResponse {
     async fn process(
         data: Data<&HttpContext>,
-        project_id: String,
+        params: Params,
         body: Json<UpdateProjectBody>,
     ) -> anyhow::Result<Project> {
         update_project(
             data.db.clone(),
-            project_id,
+            ProjectFilterDto {
+                id: Some(params.project_id),
+                workspace_id: Some(params.workspace_id),
+                name: None,
+            },
             UpdateProjectDto {
                 name: body.name.clone(),
                 options: body.options.clone(),
@@ -135,5 +136,5 @@ pub async fn project_update(
         .await
     }
 
-    http_common::response::to_response(process(data, project_id, body).await)
+    http_common::response::to_response(process(data, params, body).await)
 }

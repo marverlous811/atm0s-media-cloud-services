@@ -6,7 +6,7 @@ use reqwest::StatusCode;
 
 use crate::http::HttpContext;
 
-const CLERK_USER_ID: &str = "x-clerk-user-id";
+pub(crate) const CLERK_USER_ID: &str = "x-clerk-user-id";
 
 pub struct ClerkUserId(String);
 

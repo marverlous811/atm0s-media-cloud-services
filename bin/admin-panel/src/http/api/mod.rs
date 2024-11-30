@@ -31,7 +31,7 @@ pub fn build_route(ctx: HttpContext) -> Route {
         .at("/sync/projects", get(sync::sync_projects))
         .nest(
             "/workspaces",
-            workspace::build_route().with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
+            workspace::build_route(ctx.clone()).with(middleware::clerk_auth::ClerkAuthMiddleware::new(ctx.clone())),
         )
         .nest("/configs", configs::build_route())
         .nest(

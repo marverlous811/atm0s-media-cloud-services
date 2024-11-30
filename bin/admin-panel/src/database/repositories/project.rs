@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::database::models::project::{Project, ProjectCodecs, ProjectOptions};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ProjectFilterDto {
     pub id: Option<String>,
     pub workspace_id: Option<String>,
@@ -73,11 +73,12 @@ pub async fn get_project(client: Arc<dyn welds::Client>, filter: ProjectFilterDt
 
 pub async fn update_project(
     client: Arc<dyn welds::Client>,
-    id: String,
+    filter: ProjectFilterDto,
     dto: UpdateProjectDto,
 ) -> anyhow::Result<Project> {
-    let project = Project::find_by_id(client.as_ref(), id).await?;
-    match project {
+    let query = build_query(filter);
+    let mut res = query.run(client.as_ref()).await?;
+    match res.pop() {
         Some(mut project) => {
             if let Some(name) = dto.name {
                 project.name = name;

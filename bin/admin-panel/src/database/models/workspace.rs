@@ -1,11 +1,15 @@
 use serde::{Deserialize, Serialize};
 use welds::{errors::Result, WeldsModel};
 
+use super::{project::Project, workspace_member::WorkspaceMember};
+
 #[derive(Debug, Clone, Serialize, Deserialize, WeldsModel)]
 #[welds(table = "d_workspaces")]
 #[welds(db(Sqlite, Postgres))]
 #[welds(BeforeCreate(before_create))]
 #[welds(BeforeUpdate(before_update))]
+#[welds(HasMany(projects, Project, "workspace_id"))]
+#[welds(HasMany(members, WorkspaceMember, "workspace_id"))]
 pub struct Workspace {
     #[welds(primary_key)]
     pub id: String,

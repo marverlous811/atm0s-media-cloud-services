@@ -36,7 +36,7 @@ pub fn m20241125_create_workspace(_: &TableState) -> Result<MigrationStep> {
 
 pub fn m20241125_create_workspace_members(_: &TableState) -> Result<MigrationStep> {
     let m = create_table("d_workspace_members")
-        .id(|c| c("id", Type::Int))
+        .id(|c| c("id", Type::String))
         .column(|c| c("workspace_id", Type::String).create_index())
         .column(|c| c("user_id", Type::String).create_index())
         .column(|c| c("created_at", Type::IntBig))

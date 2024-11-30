@@ -2,12 +2,13 @@ use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 
-use crate::database::models::workspace::Workspace;
+use crate::database::models::{workspace::Workspace, workspace_member::WorkspaceMember};
 
 #[derive(Debug, Clone, Default)]
 pub struct WorkspaceFilterDto {
     pub id: Option<String>,
     pub name: Option<String>,
+    pub user_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -99,6 +100,11 @@ fn build_query(filter: WorkspaceFilterDto) -> welds::query::builder::QueryBuilde
     }
     if let Some(name) = filter.name {
         query = query.where_col(|c| c.name.equal(name.clone()));
+    }
+
+    if let Some(user_id) = filter.user_id {
+        let member_query = WorkspaceMember::where_col(|c| c.user_id.equal(user_id.clone()));
+        query = query.where_relation(|w| w.members, member_query);
     }
     query
 }
